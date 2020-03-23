@@ -2,12 +2,9 @@ const Discord = require("discord.js");
 const dotenv = require("dotenv")
 dotenv.config()
 
-const search = require('youtube-search');
-const opts = {
-  // part: 'snippet',
-  maxResults: 5,
-  key: process.env.YOUTUBE_API
-}
+const { YTSearcher } = require('ytsearcher');
+const searcher = new YTSearcher(process.env.YOUTUBE_API);
+
 
 const bot = new Discord.Client();
 
@@ -40,39 +37,33 @@ bot.on("message", message => {
     case 'stop':
       stop(message, serverQueue)
       return;
+    case 'shuffle':
+      shuffleQueue(message, serverQueue)
+      return;
   }
 
 });
 
-function executeQuery(message, serverQueue, args){
+async function executeQuery(message, serverQueue, args){
   var temp;
   args.shift(); //removes play from args
   search_terms = args.join(" ");
-  search(search_terms, opts, function(err, results) {
-    if(err) return console.log(err);
+  let result = await searcher.search(search_terms, { type: 'video' });
+  console.log(result);
+  url = result.first.url;
+  executeLink(message, serverQueue, url);
     
-    index = 0;
-    first_video = results[index];
-    while (first_video.kind != "youtube#video"){//to prevent bot from looking at channels
-    first_video = results[index]; //get first video that comes up from search
-    index += 1;
-    }
-
-    url = first_video.link;
-    executeLink(message, serverQueue, url);
-    
-  });
 }
 
 async function executeLink(message, serverQueue, arg){
   const voiceChannel = message.member.voice.channel;
   if(!arg){
-    message.channel.send("provide a link stupid!");
+    message.channel.send("**provide a link stupid!**");
     return;
   }
 
   if(!voiceChannel){
-    message.channel.send("Must be in channel to use bot!");
+    message.channel.send("**Must be in channel to use bot!**");
     return;
   }
 
@@ -105,7 +96,7 @@ async function executeLink(message, serverQueue, arg){
     }
   }else{ //there is already a queue
     serverQueue.songs.push(song);
-    return message.channel.send(`${song.title} has been added to the queue!`);
+    return message.channel.send(`**${song.title}** has been added to the queue!`);
   }
 
 }
@@ -151,4 +142,37 @@ function stop(message, serverQueue){
   serverQueue.connection.dispatcher.end(); //stops bot
 }
 
+function shuffleQueue(message, serverQueue){
+  if (!message.member.voice.channel){ //not in voice channel
+    message.channel.send("**You can't shuffle the music if you're not in the channel!**")
+    return;
+  }
+
+  current_queue = serverQueue.songs;
+  current_song = current_queue.shift();
+
+  shuffled_queue = shuffle(current_queue); //shuffle everything but first song
+  shuffled_queue.unshift(current_song);//places first song back at start
+  console.log(shuffled_queue);
+
+  serverQueue.songs = shuffled_queue; 
+  message.channel.send("**Music has been shuffled!**")
+}
+
+function shuffle(array) { //shuffles array
+  let counter = array.length;
+  // While there are elements in the array
+  while (counter > 0) {
+      // Pick a random index
+      let index = Math.floor(Math.random() * counter);
+      // Decrease counter by 1
+      counter--;
+      // And swap the last element with it
+      let temp = array[counter];
+      array[counter] = array[index];
+      array[index] = temp;
+  }
+
+  return array;
+}
 bot.login(token);

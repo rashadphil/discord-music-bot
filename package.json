@@ -27,6 +27,7 @@
     "opusscript": "0.0.7",
     "youtube-search": "^1.1.4",
     "ytdl": "^1.2.0",
-    "ytdl-core": "^2.0.1"
+    "ytdl-core": "^2.0.1",
+    "ytsearcher": "^1.2.2"
   }
 }
