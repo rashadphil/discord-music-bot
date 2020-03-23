@@ -1,0 +1,19 @@
+{
+  "name": "discord-music-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rashadphil/discord-music-bot.git"
+  },
+  "author": "Rashad Philizaire",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rashadphil/discord-music-bot/issues"
+  },
+  "homepage": "https://github.com/rashadphil/discord-music-bot#readme"
+}
