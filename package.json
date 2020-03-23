@@ -17,11 +17,15 @@
   },
   "homepage": "https://github.com/rashadphil/discord-music-bot#readme",
   "dependencies": {
+    "@discordjs/opus": "^0.1.0",
     "discord.js": "^12.0.2",
     "dotenv": "^8.2.0",
+    "ffmpeg": "0.0.4",
+    "fluent-ffmpeg": "^2.1.2",
     "keychain": "^1.3.0",
     "keytar": "^5.4.0",
     "opusscript": "0.0.7",
+    "ytdl": "^1.2.0",
     "ytdl-core": "^2.0.1"
   }
 }
