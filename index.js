@@ -22,10 +22,11 @@ bot.on("message", message => {
   const serverQueue = queue.get(message.guild.id);
   switch (args[0]){
     case 'play':
-        if (args.length > 2 || !args.includes(".")){
-          executeQuery(message, serverQueue, args);
-        }else{
+        if (args.length == 2 && args[1].includes(".")){
           executeLink(message, serverQueue, args[1]);
+          
+        }else{
+          executeQuery(message, serverQueue, args);
         }
         return;
     case 'skip':
