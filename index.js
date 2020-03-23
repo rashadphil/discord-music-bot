@@ -5,6 +5,13 @@ dotenv.config()
 const { YTSearcher } = require('ytsearcher');
 const searcher = new YTSearcher(process.env.YOUTUBE_API);
 
+var SpotifyWebApi = require('spotify-web-api-node');
+var spotifyApi = new SpotifyWebApi({
+  clientId: "e75865150f014d918c5f91797c7f29f7",
+  clientSecret: "9649aab67bef4281a83740265314493a"
+});
+
+// spotifyApi.setAccessToken(process.env.SPOTIFY_API)
 
 const bot = new Discord.Client();
 
@@ -40,6 +47,10 @@ bot.on("message", message => {
     case 'shuffle':
       shuffleQueue(message, serverQueue)
       return;
+    case 'queue':
+    case 'q':
+      message.channel.send(printQueue(message, serverQueue));
+      return;
   }
 
 });
@@ -49,7 +60,6 @@ async function executeQuery(message, serverQueue, args){
   args.shift(); //removes play from args
   search_terms = args.join(" ");
   let result = await searcher.search(search_terms, { type: 'video' });
-  console.log(result);
   url = result.first.url;
   executeLink(message, serverQueue, url);
     
@@ -153,10 +163,9 @@ function shuffleQueue(message, serverQueue){
 
   shuffled_queue = shuffle(current_queue); //shuffle everything but first song
   shuffled_queue.unshift(current_song);//places first song back at start
-  console.log(shuffled_queue);
 
   serverQueue.songs = shuffled_queue; 
-  message.channel.send("**Music has been shuffled!**")
+  message.channel.send(`**Music has been shuffled!** \n **New Queue:** \n ${printQueue(message, serverQueue)}`)
 }
 
 function shuffle(array) { //shuffles array
@@ -174,5 +183,16 @@ function shuffle(array) { //shuffles array
   }
 
   return array;
+}
+
+function printQueue(message, serverQueue){
+  songs = serverQueue.songs;
+  queue_str = "";
+  for (i = 0; i < songs.length; i++){
+    song = songs[i];
+    queue_str += `${i + 1}. **${song.title}**\n`;
+  }
+  
+  return queue_str;
 }
 bot.login(token);
