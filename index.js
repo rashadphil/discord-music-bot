@@ -5,14 +5,6 @@ dotenv.config()
 const { YTSearcher } = require('ytsearcher');
 const searcher = new YTSearcher(process.env.YOUTUBE_API);
 
-var SpotifyWebApi = require('spotify-web-api-node');
-var spotifyApi = new SpotifyWebApi({
-  clientId: "e75865150f014d918c5f91797c7f29f7",
-  clientSecret: "9649aab67bef4281a83740265314493a"
-});
-
-// spotifyApi.setAccessToken(process.env.SPOTIFY_API)
-
 const bot = new Discord.Client();
 
 const ytdl = require("ytdl-core");
