@@ -24,6 +24,9 @@ bot.on("message", message => {
     case 'play':
         execute(message, serverQueue, args[1])
         return;
+    case 'skip':
+      skip(message, serverQueue)
+      return;
   }
 
 });
@@ -52,7 +55,7 @@ async function execute(message, serverQueue, arg){
       voiceChannel: voiceChannel,
       connection: null,
       songs: [],
-      volume: 5,
+      volume: 10,
       playing: true
     };
 
@@ -82,14 +85,26 @@ function play(guild, song) {
   }
   stream = ytdl(song.url);
   const dispatcher = serverQueue.connection
-    .play(stream)
+    .play(stream, {filter: 'audioonly'})
     .on("finish", () => {
       serverQueue.songs.shift();
       play(guild, serverQueue.songs[0]);
     })
     .on("error", error => console.error(error));
-  dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
-  serverQueue.textChannel.send(`Start playing: **${song.title}**`);
+  // dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
+  serverQueue.textChannel.send(`Now playing: **${song.title}**`);
+}
+
+function skip(message, serverQueue){
+  if (!message.member.voice.channel){ //not in voice channel
+    message.channel.send("**You can't skip if you're not in the channel!**")
+    return;
+  }
+  if (!serverQueue) { //no songs in queue
+    message.channel.send("**There are no songs in the queue!**")
+    return;
+  }
+  serverQueue.connection.dispatcher.end(); //skips to next song
 }
 
 bot.login(token);
