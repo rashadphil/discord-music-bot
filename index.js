@@ -9,8 +9,6 @@ const bot = new Discord.Client();
 
 const ytdl = require("ytdl-core");
 
-const token = process.env.BOT_TOKEN;
-
 const PREFIX = "!"
 
 const queue = new Map();
@@ -187,4 +185,4 @@ function printQueue(message, serverQueue){
   
   return queue_str;
 }
-bot.login(token);
+bot.login(process.env.BOT_TOKEN);
