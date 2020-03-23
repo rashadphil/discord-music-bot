@@ -1,7 +1,13 @@
 const Discord = require("discord.js");
-
 const dotenv = require("dotenv")
 dotenv.config()
+
+const search = require('youtube-search');
+const opts = {
+  // part: 'snippet',
+  maxResults: 5,
+  key: process.env.YOUTUBE_API
+}
 
 const bot = new Discord.Client();
 
@@ -22,7 +28,11 @@ bot.on("message", message => {
   const serverQueue = queue.get(message.guild.id);
   switch (args[0]){
     case 'play':
-        execute(message, serverQueue, args[1])
+        if (args.length > 2 || !args.includes(".")){
+          executeQuery(message, serverQueue, args);
+        }else{
+          executeLink(message, serverQueue, args[1]);
+        }
         return;
     case 'skip':
       skip(message, serverQueue)
@@ -34,17 +44,38 @@ bot.on("message", message => {
 
 });
 
-async function execute(message, serverQueue, arg){
-  const voiceChannel = message.member.voice.channel;
+function executeQuery(message, serverQueue, args){
+  var temp;
+  args.shift(); //removes play from args
+  search_terms = args.join(" ");
+  search(search_terms, opts, function(err, results) {
+    if(err) return console.log(err);
+    
+    index = 0;
+    first_video = results[index];
+    while (first_video.kind != "youtube#video"){//to prevent bot from looking at channels
+    first_video = results[index]; //get first video that comes up from search
+    index += 1;
+    }
 
+    url = first_video.link;
+    executeLink(message, serverQueue, url);
+    
+  });
+}
+
+async function executeLink(message, serverQueue, arg){
+  const voiceChannel = message.member.voice.channel;
   if(!arg){
     message.channel.send("provide a link stupid!");
     return;
   }
+
   if(!voiceChannel){
     message.channel.send("Must be in channel to use bot!");
     return;
   }
+
   const songInfo = await ytdl.getInfo(arg);
   const song = {
     title: songInfo.title,
