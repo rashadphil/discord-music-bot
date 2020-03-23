@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
-const dotenv = require("dotenv")
-dotenv.config()
+// const dotenv = require("dotenv")
+// dotenv.config()
 
 const { YTSearcher } = require('ytsearcher');
 const searcher = new YTSearcher(process.env.YOUTUBE_API);
