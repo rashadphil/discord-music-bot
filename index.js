@@ -3,9 +3,13 @@ const {
   Attachment,
 
 } = require("discord.js");
+
+const dotenv = require("dotenv")
+dotenv.config()
+
 const bot = new Client();
 
-const token = "NjkxNDY5NTc4MTk0MjU1OTM0.Xngchw.xGpNNdUq0u0s-atjlFNvSUoeDgU";
+const token = process.env.BOT_TOKEN;
 
 const PREFIX = "!"
 
