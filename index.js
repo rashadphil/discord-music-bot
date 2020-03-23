@@ -27,6 +27,9 @@ bot.on("message", message => {
     case 'skip':
       skip(message, serverQueue)
       return;
+    case 'stop':
+      stop(message, serverQueue)
+      return;
   }
 
 });
@@ -105,6 +108,16 @@ function skip(message, serverQueue){
     return;
   }
   serverQueue.connection.dispatcher.end(); //skips to next song
+}
+
+function stop(message, serverQueue){
+  if (!message.member.voice.channel){ //not in voice channel
+    message.channel.send("**You can't stop the music if you're not in the channel!**")
+    return;
+  }
+  serverQueue.songs = []; //removes all songs from queue
+  message.channel.send("**Music has been stopped!**")
+  serverQueue.connection.dispatcher.end(); //stops bot
 }
 
 bot.login(token);
