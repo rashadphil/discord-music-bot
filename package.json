@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/rashadphil/discord-music-bot/issues"
   },
-  "homepage": "https://github.com/rashadphil/discord-music-bot#readme"
+  "homepage": "https://github.com/rashadphil/discord-music-bot#readme",
+  "dependencies": {
+    "discord.js": "^12.0.2",
+    "opusscript": "0.0.7",
+    "ytdl-core": "^2.0.1"
+  }
 }
